@@ -1,0 +1,95 @@
+{
+  "selected_best_model": "Calibrated LinearSVC (C=0.5)",
+  "saved_at": "2026-11-12 13:01:38",
+  "feature_dimensions": 25000,
+  "train_samples": 127656,
+  "test_samples": 31915,
+  "roc_auc": 0.9761308455013562,
+  "pr_auc": 0.8877436450873857,
+  "test_metrics_by_mode": {
+    "default_0.50": {
+      "threshold": 0.5,
+      "accuracy": 0.9608334638884537,
+      "precision": 0.8870779976717112,
+      "recall": 0.7044684129429892,
+      "f1": 0.7852971487461353,
+      "confusion_matrix": [
+        [
+          28379,
+          291
+        ],
+        [
+          959,
+          2286
+        ]
+      ],
+      "true_negatives": 28379,
+      "false_positives": 291,
+      "false_negatives": 959,
+      "true_positives": 2286
+    },
+    "strict": {
+      "threshold": 0.0846,
+      "accuracy": 0.9146482845057183,
+      "precision": 0.5472690981673017,
+      "recall": 0.9294298921417565,
+      "f1": 0.6888990406578346,
+      "confusion_matrix": [
+        [
+          26175,
+          2495
+        ],
+        [
+          229,
+          3016
+        ]
+      ],
+      "true_negatives": 26175,
+      "false_positives": 2495,
+      "false_negatives": 229,
+      "true_positives": 3016
+    },
+    "balanced": {
+      "threshold": 0.3905,
+      "accuracy": 0.9610841297195676,
+      "precision": 0.8452257842123406,
+      "recall": 0.7556240369799692,
+      "f1": 0.7979173446143834,
+      "confusion_matrix": [
+        [
+          28221,
+          449
+        ],
+        [
+          793,
+          2452
+        ]
+      ],
+      "true_negatives": 28221,
+      "false_positives": 449,
+      "false_negatives": 793,
+      "true_positives": 2452
+    },
+    "lenient": {
+      "threshold": 0.5798,
+      "accuracy": 0.9603947986840043,
+      "precision": 0.9121930919683728,
+      "recall": 0.6755007704160246,
+      "f1": 0.7762039660056658,
+      "confusion_matrix": [
+        [
+          28459,
+          211
+        ],
+        [
+          1053,
+          2192
+        ]
+      ],
+      "true_negatives": 28459,
+      "false_positives": 211,
+      "false_negatives": 1053,
+      "true_positives": 2192
+    }
+  }
+}

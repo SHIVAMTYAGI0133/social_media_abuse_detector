@@ -1,0 +1,100 @@
+# AbuseGuard AI - Roman-Script Hinglish Abuse & Threat Lexicon (v2)
+# Format: category|term
+# Categories: obscene, insult, threat, hate
+
+# --- OBSCENE / PROFANITY ---
+obscene|behenchod
+obscene|bhenchod
+obscene|madarchod
+obscene|maderchod
+obscene|maadarchod
+obscene|bhosdike
+obscene|bhosdiwale
+obscene|bsdk
+obscene|bkl
+obscene|mkc
+obscene|chutiya
+obscene|chutiye
+obscene|chutiyapa
+obscene|gandu
+obscene|gaandu
+obscene|lauda
+obscene|loda
+obscene|lund
+obscene|randi
+obscene|raandi
+obscene|chinal
+obscene|jhatu
+obscene|tatte
+
+# --- INSULT / HARASSMENT ---
+insult|harami
+insult|haraami
+insult|haramkhor
+insult|haramzada
+insult|kamina
+insult|kameena
+insult|kameene
+insult|kutta
+insult|kutte
+insult|kuttey
+insult|kutti
+insult|suar
+insult|suwar
+insult|ullu ka pattha
+insult|ullu ke patthe
+insult|gadha
+insult|gadhe
+insult|nalayak
+insult|badtameez
+insult|badtamiz
+insult|bewakoof
+insult|bevakoof
+insult|besharam
+insult|gawar
+insult|jahil
+insult|chhapri
+insult|chapri
+insult|nikamma
+insult|ghatiya
+insult|chirkut
+insult|bhikari
+insult|dogla
+insult|chamcha
+insult|bakwas
+insult|tatti
+insult|aukat mein reh
+insult|aukat dekh
+insult|teri aukat
+
+# --- VIOLENT THREATS ---
+threat|jaan se maar
+threat|jaan se mar
+threat|maar dunga
+threat|mar dunga
+threat|maar dalunga
+threat|maar daalunga
+threat|kaat dunga
+threat|kat dunga
+threat|zinda nahi chhodunga
+threat|zinda nahi chodunga
+threat|zinda jala dunga
+threat|thok dunga
+threat|goli maar
+threat|sar tan se juda
+threat|khatam kar dunga
+threat|tod dunga
+threat|phod dunga
+
+# --- IDENTITY / HATE ---
+hate|deshdrohi
+hate|gaddar
+hate|katua
+hate|mulla
+hate|chamar
+hate|bhangi
+hate|kafir
+hate|aatankwadi
+hate|atankwadi
+hate|jihadi
+

@@ -1,0 +1,125 @@
+{
+  "verified_at": "2026-11-12 12:08:08",
+  "dataset_total_rows_raw": 159571,
+  "dataset_total_rows_prepared": 159571,
+  "split": {
+    "train_size": 127656,
+    "test_size": 31915,
+    "test_abusive_count": 3245,
+    "test_safe_count": 28670,
+    "random_state": 42,
+    "stratified": true
+  },
+  "v1_test_metrics": {
+    "model_name": "Logistic Regression (v1)",
+    "accuracy": 0.9254895817013943,
+    "abusive_precision": 0.5909376966645689,
+    "abusive_recall": 0.8681047765793528,
+    "abusive_f1": 0.7031952071892161,
+    "roc_auc": 0.9647779928123167,
+    "pr_auc": 0.8511610191128883,
+    "confusion_matrix": [
+      [
+        26720,
+        1950
+      ],
+      [
+        428,
+        2817
+      ]
+    ],
+    "true_negatives": 26720,
+    "false_positives": 1950,
+    "false_negatives": 428,
+    "true_positives": 2817,
+    "matches_original_evaluation_summary_json": true
+  },
+  "v1_original_comparison_models": {
+    "Logistic Regression": {
+      "accuracy": 0.9254895817013943,
+      "abusive_precision": 0.5909376966645689,
+      "abusive_recall": 0.8681047765793528,
+      "abusive_f1": 0.7031952071892161,
+      "confusion_matrix": [
+        [
+          26720,
+          1950
+        ],
+        [
+          428,
+          2817
+        ]
+      ]
+    },
+    "Multinomial Naive Bayes": {
+      "accuracy": 0.9462321792260693,
+      "abusive_precision": 0.8621506395073425,
+      "abusive_recall": 0.5608628659476117,
+      "abusive_f1": 0.6796116504854369,
+      "confusion_matrix": [
+        [
+          28379,
+          291
+        ],
+        [
+          1425,
+          1820
+        ]
+      ]
+    }
+  },
+  "v1_inspected_params": {
+    "model_type": "LogisticRegression",
+    "model_params": {
+      "C": 1.0,
+      "class_weight": "balanced",
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 42,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "vectorizer_type": "TfidfVectorizer",
+    "vectorizer_params": {
+      "analyzer": "word",
+      "binary": false,
+      "decode_error": "strict",
+      "dtype": "<class 'numpy.float64'>",
+      "encoding": "utf-8",
+      "input": "content",
+      "lowercase": true,
+      "max_df": 1.0,
+      "max_features": 10000,
+      "min_df": 2,
+      "ngram_range": "(1, 2)",
+      "norm": "l2",
+      "preprocessor": null,
+      "smooth_idf": true,
+      "stop_words": null,
+      "strip_accents": null,
+      "sublinear_tf": true,
+      "token_pattern": "(?u)\\b\\w\\w+\\b",
+      "tokenizer": null,
+      "use_idf": true,
+      "vocabulary": null
+    },
+    "learned_vocab_size": 10000
+  },
+  "parameter_mismatches": [
+    {
+      "parameter": "max_features",
+      "src_feature_extraction_default": 5000,
+      "src_model_training_and_train_py_effective": 10000,
+      "saved_v1_vectorizer_actual": 10000,
+      "saved_v1_vocab_size": 10000,
+      "note": "src/feature_extraction.py create_tfidf_vectorizer() defaults to max_features=5000, whereas train.py -> run_training_pipeline() overrides max_features=10000."
+    }
+  ]
+}

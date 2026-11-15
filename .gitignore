@@ -1,0 +1,50 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Real Datasets (Do NOT commit large data files to git)
+data/*.csv
+data/external/*.csv
+data/*.zip
+data/*.parquet
+!data/README.md
+!data/hinglish_lexicon.txt
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Visualizations & Output Artifacts
+data/*.png
+data/*.jpg
+output/
+plots/
+
+# Trained ML Models (Keep models tracked for cloud deployment, total < 5 MB)
+!models/*.joblib
+!models/*/*.joblib
+!models/*.json
+!models/*/*.json
+!models/README.md
+
+# Temporary report generation folders
+REPORT_GENERATION_TEMP/
+REPORT_AUDIT_RESULTS/
+
+# IDE and Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store

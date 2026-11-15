@@ -1,0 +1,29 @@
+{
+  "calibrated_on_val_samples": 19149,
+  "train_sub_samples": 108507,
+  "winner_model": "Calibrated LinearSVC (C=0.5)",
+  "val_pr_auc": 0.8869342523328881,
+  "thresholds": {
+    "strict": {
+      "threshold": 0.0846,
+      "target": "High Recall (>= 92% validation recall)",
+      "val_precision": 0.5290646208321038,
+      "val_recall": 0.9209039548022598,
+      "val_f1": 0.6720389805097451
+    },
+    "balanced": {
+      "threshold": 0.3905,
+      "target": "Max Validation F1-Score",
+      "val_precision": 0.8476407049459921,
+      "val_recall": 0.765793528505393,
+      "val_f1": 0.8046411225040475
+    },
+    "lenient": {
+      "threshold": 0.5798,
+      "target": "High Precision (>= 92% validation precision)",
+      "val_precision": 0.9200833912439194,
+      "val_recall": 0.6800205444273241,
+      "val_f1": 0.7820437093916126
+    }
+  }
+}
