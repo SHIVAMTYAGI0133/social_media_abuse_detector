@@ -21,6 +21,7 @@ import joblib
 import numpy as np
 
 from .data_loader import TOXICITY_COLUMNS
+from .english_negation import apply_english_negation_scoping
 from .feature_extraction import get_feature_names, transform_tfidf
 from .hinglish_detector import detect_hinglish_abuse
 from .model_training import get_default_models_dir, load_model_artifacts
@@ -219,24 +220,35 @@ def predict_comment(
 
     # Apply threshold (exact model.predict() when threshold is None and no Hinglish hit)
     if threshold is None:
-        ml_pred_label = int(model.predict(X_sparse)[0])
         eff_thresh = 0.5
     else:
         eff_thresh = float(threshold)
-        ml_pred_label = 1 if ml_abusive_prob >= eff_thresh else 0
 
-    ml_is_abusive = ml_pred_label == 1
+    # Apply English negation scoping layer (Fix 2.2)
+    english_negation_info = apply_english_negation_scoping(
+        text=raw_str,
+        ml_abusive_prob=ml_abusive_prob,
+        model=model,
+        vectorizer=vectorizer,
+        threshold=eff_thresh,
+    )
+
+    effective_ml_prob = (
+        english_negation_info["adjusted_score"]
+        if english_negation_info["adjustment_applied"]
+        else ml_abusive_prob
+    )
 
     # Combine with Hinglish rule layer if enabled
     if hinglish_info["hinglish_flagged"]:
         rule_score = float(hinglish_info.get("rule_score", 0.0))
-        final_abusive_prob = max(ml_abusive_prob, rule_score)
+        final_abusive_prob = max(effective_ml_prob, rule_score)
         final_safe_prob = max(0.0, 1.0 - final_abusive_prob)
         is_abusive = final_abusive_prob >= eff_thresh
     else:
-        final_abusive_prob = ml_abusive_prob
-        final_safe_prob = ml_safe_prob if threshold is None else max(0.0, 1.0 - ml_abusive_prob)
-        is_abusive = ml_is_abusive
+        final_abusive_prob = effective_ml_prob
+        final_safe_prob = max(0.0, 1.0 - final_abusive_prob)
+        is_abusive = final_abusive_prob >= eff_thresh
 
     pred_label = 1 if is_abusive else 0
     label_text = "Abusive" if is_abusive else "Safe"
@@ -249,11 +261,11 @@ def predict_comment(
         ml_preds_vec = multilabel_model.predict(X_sparse)[0]
         for col, prob_val, pred_val in zip(TOXICITY_COLUMNS, ml_probs_vec, ml_preds_vec):
             category_probs[col] = float(prob_val)
-            if int(pred_val) == 1 or float(prob_val) >= 0.5:
+            if is_abusive and (int(pred_val) == 1 or float(prob_val) >= 0.5):
                 active_categories.append(col)
 
     # Include Hinglish matched categories cleanly if flagged (active abuse only)
-    if hinglish_info["hinglish_flagged"]:
+    if hinglish_info["hinglish_flagged"] and is_abusive:
         for cat in hinglish_info["matched_categories"]:
             if cat not in active_categories:
                 active_categories.append(cat)
@@ -274,6 +286,7 @@ def predict_comment(
         "category_probabilities": category_probs,
         "hinglish_match": hinglish_info,
         "hinglish_suppressed_matches": hinglish_info.get("suppressed_matches", []),
+        "english_negation_info": english_negation_info,
         "needs_human_review": bool(hinglish_info.get("needs_human_review", False)),
         "top_features": top_features,
     }

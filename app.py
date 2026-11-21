@@ -482,6 +482,11 @@ def _render_result_panel(res: Dict[str, Any], engine_label: str, is_v2: bool = T
             unsafe_allow_html=True,
         )
     else:
+        neg_applied = res.get("english_negation_info", {}).get("adjustment_applied", False)
+        extra_note = ""
+        if neg_applied:
+            orig_pct = res.get("ml_abusive_probability", 0.0) * 100.0
+            extra_note = f"<div style='margin-top: 4px; font-size: 0.82rem; color: #22c55e;'>ℹ️ English Negation Scope Layer neutralized negated insult (raw ML model score: {orig_pct:.1f}%).</div>"
         st.markdown(
             f"""
             <div class="result-badge-safe">
@@ -489,7 +494,7 @@ def _render_result_panel(res: Dict[str, Any], engine_label: str, is_v2: bool = T
                     <span>✅</span> {engine_label}: SAFE
                 </div>
                 <div class="result-explanation">
-                    Abusive score <strong>{abusive_pct:.1f}%</strong> is below threshold <code>{thresh:.3f}</code>.
+                    Abusive score <strong>{abusive_pct:.1f}%</strong> is below threshold <code>{thresh:.3f}</code>.{extra_note}
                 </div>
             </div>
             """,
