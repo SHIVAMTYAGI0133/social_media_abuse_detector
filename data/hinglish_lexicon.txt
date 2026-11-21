@@ -16,16 +16,22 @@ obscene|mkc
 obscene|chutiya
 obscene|chutiye
 obscene|chutiyapa
+obscene|chootya
+obscene|chutya
 obscene|gandu
 obscene|gaandu
+obscene|gandwa
 obscene|lauda
 obscene|loda
+obscene|lode
 obscene|lund
 obscene|randi
 obscene|raandi
 obscene|chinal
 obscene|jhatu
 obscene|tatte
+obscene|bhosadike
+obscene|bhosdk
 
 # --- INSULT / HARASSMENT ---
 insult|harami
@@ -35,10 +41,12 @@ insult|haramzada
 insult|kamina
 insult|kameena
 insult|kameene
+insult|kaminey
 insult|kutta
 insult|kutte
 insult|kuttey
 insult|kutti
+insult|kutteya
 insult|suar
 insult|suwar
 insult|ullu ka pattha

@@ -16,7 +16,7 @@ Upgraded Streamlit Web Application (v2):
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import matplotlib
 matplotlib.use("Agg")
@@ -249,23 +249,36 @@ st.markdown(
 # ---------------------------------------------------------------------------
 # 3. CACHED ARTIFACT & BENCHMARK LOADERS
 # ---------------------------------------------------------------------------
-@st.cache_resource(show_spinner="Loading AbuseGuard AI v1 & v2 pipelines...")
-def load_all_pipelines() -> Dict[str, Any]:
+def load_app_pipelines(base_models_dir: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
+    """
+    Loads v1 baseline (if present in models/v1/) and v2 production bundle (from models/v2/).
+    Enforces canonical v2 loading without silent fallback to legacy root models/.
+    Raises FileNotFoundError if canonical v2 artifacts are missing.
+    """
+    base_dir = Path(base_models_dir) if base_models_dir is not None else MODELS_DIR
     pipelines: Dict[str, Any] = {"v1": None, "v2": None}
 
-    v1_dir = MODELS_DIR / "v1"
+    v1_dir = base_dir / "v1"
     if (v1_dir / "best_model.joblib").is_file() and (v1_dir / "tfidf_vectorizer.joblib").is_file():
         v1_model, v1_vec = load_model_artifacts(models_dir=v1_dir)
         pipelines["v1"] = {"model": v1_model, "vectorizer": v1_vec}
 
-    v2_dir = MODELS_DIR / "v2"
+    v2_dir = base_dir / "v2"
     if (v2_dir / "best_model.joblib").is_file() and (v2_dir / "tfidf_vectorizer.joblib").is_file():
         pipelines["v2"] = load_v2_bundle(models_dir=v2_dir)
-    elif (MODELS_DIR / "best_model.joblib").is_file():
-        m, v = load_model_artifacts(models_dir=MODELS_DIR)
-        pipelines["v2"] = {"model": m, "vectorizer": v, "multilabel_model": None, "thresholds": {}}
+    else:
+        raise FileNotFoundError(
+            f"[CRITICAL ERROR] Canonical v2 production artifacts missing in '{v2_dir}'. "
+            "AbuseGuard AI requires 'best_model.joblib' and 'tfidf_vectorizer.joblib' inside models/v2/. "
+            "Silent fallback to legacy v1 artifacts in root models/ has been disabled."
+        )
 
     return pipelines
+
+
+@st.cache_resource(show_spinner="Loading AbuseGuard AI v1 & v2 pipelines...")
+def load_all_pipelines(base_models_dir: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
+    return load_app_pipelines(base_models_dir=base_models_dir)
 
 
 def _read_json_safe(path: Path) -> Optional[Dict[str, Any]]:
@@ -332,7 +345,15 @@ def reset_form() -> None:
 # ---------------------------------------------------------------------------
 # 5. LOAD PIPELINES & SIDEBAR CONTROLS
 # ---------------------------------------------------------------------------
-pipelines = load_all_pipelines()
+try:
+    pipelines = load_all_pipelines()
+except FileNotFoundError as err:
+    st.error(f"⚠️ Model Loading Error: {err}")
+    st.stop()
+except Exception as err:
+    st.error(f"⚠️ Unexpected Model Loading Failure: {err}")
+    st.stop()
+
 v1_bundle = pipelines.get("v1")
 v2_bundle = pipelines.get("v2")
 

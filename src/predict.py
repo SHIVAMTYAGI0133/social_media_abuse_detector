@@ -32,8 +32,11 @@ def get_prediction_pipeline(
 ) -> Tuple[Any, Any]:
     """
     Loads and returns the trained model and fitted vectorizer.
+    Defaults to the canonical production directory (models/v2/) to ensure consistency
+    with api.py and app.py, with no silent fallback to legacy V1.
     """
-    return load_model_artifacts(models_dir=models_dir)
+    target_dir = Path(models_dir) if models_dir is not None else (get_default_models_dir() / "v2")
+    return load_model_artifacts(models_dir=target_dir)
 
 
 def load_v2_bundle(
@@ -181,7 +184,7 @@ def predict_comment(
         ml_abusive_prob = 0.0
         final_abusive_prob = max(ml_abusive_prob, hinglish_info["rule_score"]) if hinglish_info["hinglish_flagged"] else 0.0
         eff_thresh = 0.5 if threshold is None else float(threshold)
-        is_abusive = bool(hinglish_info["hinglish_flagged"] or final_abusive_prob >= eff_thresh)
+        is_abusive = bool(final_abusive_prob >= eff_thresh) if hinglish_info["hinglish_flagged"] else False
         return {
             "is_abusive": is_abusive,
             "prediction_label": 1 if is_abusive else 0,
@@ -195,6 +198,8 @@ def predict_comment(
             "active_categories": list(hinglish_info["matched_categories"]),
             "category_probabilities": {},
             "hinglish_match": hinglish_info,
+            "hinglish_suppressed_matches": hinglish_info.get("suppressed_matches", []),
+            "needs_human_review": bool(hinglish_info.get("needs_human_review", False)),
             "top_features": [],
             "note": "Text contained only URLs or punctuation with no extractable words.",
         }
@@ -224,9 +229,10 @@ def predict_comment(
 
     # Combine with Hinglish rule layer if enabled
     if hinglish_info["hinglish_flagged"]:
-        final_abusive_prob = max(ml_abusive_prob, float(hinglish_info["rule_score"]))
+        rule_score = float(hinglish_info.get("rule_score", 0.0))
+        final_abusive_prob = max(ml_abusive_prob, rule_score)
         final_safe_prob = max(0.0, 1.0 - final_abusive_prob)
-        is_abusive = True
+        is_abusive = final_abusive_prob >= eff_thresh
     else:
         final_abusive_prob = ml_abusive_prob
         final_safe_prob = ml_safe_prob if threshold is None else max(0.0, 1.0 - ml_abusive_prob)
@@ -246,7 +252,7 @@ def predict_comment(
             if int(pred_val) == 1 or float(prob_val) >= 0.5:
                 active_categories.append(col)
 
-    # Include Hinglish matched categories cleanly if flagged
+    # Include Hinglish matched categories cleanly if flagged (active abuse only)
     if hinglish_info["hinglish_flagged"]:
         for cat in hinglish_info["matched_categories"]:
             if cat not in active_categories:
@@ -267,5 +273,7 @@ def predict_comment(
         "active_categories": active_categories,
         "category_probabilities": category_probs,
         "hinglish_match": hinglish_info,
+        "hinglish_suppressed_matches": hinglish_info.get("suppressed_matches", []),
+        "needs_human_review": bool(hinglish_info.get("needs_human_review", False)),
         "top_features": top_features,
     }
